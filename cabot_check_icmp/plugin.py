@@ -1,12 +1,12 @@
-from os import environ as env
-
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django import forms
 from django.template import Context, Template
 
 from cabot.plugins.models import CheckPlugin
 
+from os import environ as env
 import requests
 import logging
 
@@ -34,16 +34,6 @@ class ICMPCheckPlugin(CheckPlugin):
 
         return result
 
-class ICMPStatusCheckForm(StatusCheckForm):
-
-    class Meta:
-        model = ICMPStatusCheck
-        fields = (
-            'name',
-            'frequency',
-            'importance',
-            'active',
-            'debounce',
-        )
-        widgets = dict(**base_widgets)
+class ICMPStatusCheckForm(forms.Form):
+    name = forms.CharField(max_length=80)
 
