@@ -1,0 +1,11 @@
+Metadata-Version: 1.1
+Name: cabot-check-icmp
+Version: 0.0.1
+Summary: An icmp check plugin for Cabot by Arachnys
+Home-page: http://cabotapp.com
+Author: Arachnys
+Author-email: info@arachnys.org
+License: UNKNOWN
+Download-URL: https://github.com/bonniejools/cabot-check-icmp/tarball/0.0.1
+Description: UNKNOWN
+Platform: UNKNOWN
