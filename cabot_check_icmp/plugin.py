@@ -3,10 +3,12 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django import forms
 from django.template import Context, Template
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
-from cabot.plugins.models import CheckPlugin
+from cabot.plugins.models import StatusCheckPlugin, StatusCheckPluginModel
 from cabot.plugins.forms import CheckConfigForm
-from cabot.cabotapp.models import StatusCheckResult
+from cabot.cabotapp.models import Instance, StatusCheck
 
 from os import environ as env
 import subprocess
@@ -18,7 +20,7 @@ class ICMPStatusCheckForm(CheckConfigForm):
     name = forms.CharField(max_length=80)
 
 
-class ICMPCheckPlugin(CheckPlugin):
+class ICMPStatusCheckPlugin(StatusCheckPlugin):
     name = "ICMP"
     slug = "icmp"
     author = "Jonathan Balls"
@@ -37,8 +39,7 @@ class ICMPCheckPlugin(CheckPlugin):
         else:
             return None
     
-    def run(self, check):
-        result = StatusCheckResult(status_check=check)
+    def run(self, check, result):
         instances = check.instance_set.all()
         services = check.service_set.all()
         
@@ -66,4 +67,14 @@ class ICMPCheckPlugin(CheckPlugin):
             return 'ICMP Reply from {}'.format(target.name)
         else:
             return 'ICMP Check with no target.'
+
+# Autocreate a ping check for an instance when it is created.
+@receiver(post_save, sender=Instance)
+def icmp_check_auto_create(sender, instance, created, **kwargs):
+    if created:
+        s = StatusCheck.objects.create(
+                check_plugin = StatusCheckPluginModel.objects.get(slug='icmp'),
+                name = 'Default Ping Check for {}'.format(instance.name)
+                )
+        instance.status_checks.add(s)
 
