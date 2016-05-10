@@ -4,16 +4,17 @@ from django.core.urlresolvers import reverse
 from django import forms
 from django.template import Context, Template
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import m2m_changed, post_save
 
 from cabot.plugins.models import StatusCheckPlugin, StatusCheckPluginModel
 from cabot.plugins.forms import CheckConfigForm
-from cabot.cabotapp.models import Instance, StatusCheck
+from cabot.cabotapp.models import Instance, StatusCheck, Service
 
 from os import environ as env
 import subprocess
 import requests
 import logging
+logger = logging.getLogger(__name__)
 
 
 class ICMPStatusCheckForm(CheckConfigForm):
@@ -67,14 +68,4 @@ class ICMPStatusCheckPlugin(StatusCheckPlugin):
             return 'ICMP Reply from {}'.format(target.name)
         else:
             return 'ICMP Check with no target.'
-
-# Autocreate a ping check for an instance when it is created.
-@receiver(post_save, sender=Instance)
-def icmp_check_auto_create(sender, instance, created, **kwargs):
-    if created:
-        s = StatusCheck.objects.create(
-                check_plugin = StatusCheckPluginModel.objects.get(slug='icmp'),
-                name = 'Default Ping Check for {}'.format(instance.name)
-                )
-        instance.status_checks.add(s)
 

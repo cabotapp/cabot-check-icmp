@@ -40,11 +40,3 @@ class TestICMPStatusCheckPlugin(LocalTestCase):
         result = self.icmp_check.run()
         self.assertFalse(result.succeeded)
 
-    # Assert that an icmp check is auto created whenever an instance is.
-    def test_icmp_check_autocreate(self):
-        new_instance = Instance.objects.create(
-                name = 'New Instance',
-                address = 'localhost'
-            )
-        self.assertEqual(new_instance.status_checks.count(), 1)
-
