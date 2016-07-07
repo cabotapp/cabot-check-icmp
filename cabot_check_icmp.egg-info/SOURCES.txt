@@ -1,7 +1,0 @@
-setup.cfg
-cabot_check_icmp/__init__.py
-cabot_check_icmp/plugin.py
-cabot_check_icmp.egg-info/PKG-INFO
-cabot_check_icmp.egg-info/SOURCES.txt
-cabot_check_icmp.egg-info/dependency_links.txt
-cabot_check_icmp.egg-info/top_level.txt

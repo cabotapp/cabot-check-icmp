@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from django.db.models.signals import m2m_changed, post_save
 
 from cabot.plugins.models import StatusCheckPlugin, StatusCheckPluginModel
-from cabot.plugins.forms import CheckConfigForm
 from cabot.cabotapp.models import Instance, StatusCheck, Service
 
 from os import environ as env
@@ -17,18 +16,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ICMPStatusCheckForm(CheckConfigForm):
-    name = forms.CharField(max_length=80)
-
-
 class ICMPStatusCheckPlugin(StatusCheckPlugin):
     name = "ICMP"
-    slug = "icmp"
+    slug = "cabot_check_icmp"
     author = "Jonathan Balls"
     version = "0.0.1"
     font_icon = "glyphicon glyphicon-transfer"
-
-    config_form = ICMPStatusCheckForm
 
     def target(self, check):
         instances = check.instance_set.all()

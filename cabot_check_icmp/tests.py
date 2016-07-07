@@ -10,7 +10,7 @@ class TestICMPStatusCheckPlugin(LocalTestCase):
         super(TestICMPStatusCheckPlugin, self).setUp()
 
         self.icmp_check_plugin, created = StatusCheckPluginModel.objects.get_or_create(
-                slug='icmp'
+                slug='cabot_check_icmp'
                 )
 
         self.icmp_check = StatusCheck.objects.create(
